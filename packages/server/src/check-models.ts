@@ -1,4 +1,5 @@
 import "./env.js";
+import { checkerJpeg } from "@listing/core/testing";
 import { BedrockModel, DEFAULT_VISION, missingCredentials } from "./bedrock.js";
 
 // One-shot check that both models are invocable in this account and region, and that vision works.
@@ -8,9 +9,8 @@ if (missing) {
   process.exitCode = 1;
 }
 
-// A 1×1 white JPEG.
-const PIXEL =
-  "/9j/4AAQSkZJRgABAQEASABIAAD/2wBDAAMCAgICAgMCAgIDAwMDBAYEBAQEBAgGBgUGCQgKCgkICQkKDA8MCgsOCwkJDRENDg8QEBEQCgwSExIQEw8QEBD/yQALCAABAAEBAREA/8wABgAQEAX/2gAIAQEAAD8A0s8g/9k=";
+// A small light-grey checker image.
+const PIXEL = (await checkerJpeg(220, 220, 220)).toString("base64");
 
 const orchestrator = new BedrockModel();
 const vision = new BedrockModel({ model: process.env.VISION_MODEL ?? DEFAULT_VISION });
