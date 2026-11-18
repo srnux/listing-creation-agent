@@ -228,10 +228,10 @@ export function createTools(ctx: RunContext): Tool[] {
           exposeFailures++;
           const list = invented.map((n) => `"${n.raw}" in "…${n.context}…"`).join("\n");
           if (exposeFailures > EXPOSE_REPAIRS) throw new RunAbort(`Number guard failed twice: ${invented.map((n) => n.raw).join(", ")}`);
-          return fail(
-            `Rejected: these numbers are not in the record:\n${list}\nUse only values from the draft, or rephrase without the number. Submit again.`,
-            { invented },
-          );
+          return {
+            ...fail(`Rejected: these numbers are not in the record:\n${list}\nUse only values from the draft, or rephrase without the number. Submit again.`, { invented }),
+            summary: `rejected, not in the record: ${invented.map((n) => `"${n.context}"`).join(", ")}`,
+          };
         }
         draft.expose = p;
         return ok({ accepted: true }, `accepted: "${p.de.title}"`);

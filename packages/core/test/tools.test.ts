@@ -107,6 +107,7 @@ test("submit_expose rejects an invented number, second failure aborts", async ()
   const first = await run("submit_expose", expose);
   expect(first.isError).toBe(true);
   expect(first.content).toContain("95");
+  expect(first.summary).toContain("95");
   expect(d.expose).toBeUndefined();
   await expect(run("submit_expose", expose)).rejects.toThrow(RunAbort);
 });
