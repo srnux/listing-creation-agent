@@ -35,6 +35,48 @@ export function sampleDraftFromNotes(): ListingDraft {
   return d;
 }
 
+/** A draft ready to export: notes facts, plan, photos, broker answers and an accepted exposé. */
+export function completeDraft(): ListingDraft {
+  const d = sampleDraftFromNotes();
+  d.plan = planWith4Rooms;
+  d.set("living_area_m2", 82.5, "floor_plan");
+  d.set("rooms", 4, "broker");
+  const energy: [Parameters<ListingDraft["set"]>[0], unknown][] = [
+    ["energy_certificate_type", "verbrauch"],
+    ["energy_value_kwh", 112],
+    ["energy_carrier", "fernwaerme"],
+    ["energy_construction_year", 1962],
+    ["energy_class", "D"],
+    ["energy_valid_until", "2032-05-31"],
+  ];
+  for (const [f, v] of energy) d.set(f, v, "broker");
+  d.photos = {
+    photos: [
+      { id: "01-living", room: "living", features: ["parquet"], quality: "ok", reasons: [] },
+      { id: "04-kitchen", room: "kitchen", features: ["built-in kitchen"], quality: "ok", reasons: [] },
+      { id: "05-bedroom", room: "bedroom", features: [], quality: "ok", reasons: [] },
+      { id: "14-dark", room: "living", features: [], quality: "poor", reasons: ["dark"] },
+    ],
+    order: ["01-living", "04-kitchen", "05-bedroom", "14-dark"],
+    coverId: "01-living",
+  };
+  d.expose = {
+    de: {
+      title: "4-Zimmer-Wohnung mit Südbalkon in Eimsbüttel",
+      description: "Helle 4-Zimmer-Wohnung im 2. OG mit 82,5 m² Wohnfläche. Die Einbauküche ist von 2023.",
+      location: "Ruhige Seitenstraße in Eimsbüttel, 5 Min. zur U-Bahn Osterstraße, Park um die Ecke.",
+      features: ["Einbauküche (2023)", "Balkon nach Süden", "Parkett", "Wanne im Bad"],
+    },
+    en: {
+      title: "4-room flat with south-facing balcony in Eimsbüttel",
+      description: "Bright 4-room flat on the 2nd floor with 82.5 m² of living space. The fitted kitchen is from 2023.",
+      location: "Quiet side street in Eimsbüttel, 5 min to Osterstraße underground station, park around the corner.",
+      features: ["Fitted kitchen (2023)", "South-facing balcony", "Parquet", "Bathtub"],
+    },
+  };
+  return d;
+}
+
 export const planWith4Rooms: FloorPlan = {
   rooms: [
     { name: "Wohnzimmer", type: "living", area_m2: 24.5 },
