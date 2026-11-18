@@ -1,0 +1,184 @@
+/*
+ * One stylesheet, tokens on :root (DECISIONS.md 29, 30). The Luka Engels Monochrome design system: black and
+ * white grounds, 1px ink borders, no radius, no shadow. Tokens re-scope under [data-theme], so the masthead stays a
+ * black band whichever scheme the page is in.
+ *
+ * Status hues are an intentional addition to the system: green for a tool call that returned, red for an error or
+ * a failed check, yellow for what goes to a person. Each hue means one thing. A hue is only ever a fill inside a
+ * 1px ink box with black text on it, so it reads the same on a black or a white ground, and the words beside it
+ * still carry the meaning (the lightness of green and yellow is close; nothing relies on telling them apart).
+ */
+@font-face {
+  font-family: "Inter";
+  font-weight: 300;
+  font-display: swap;
+  src: url("./fonts/inter-300.woff2") format("woff2");
+}
+@font-face {
+  font-family: "Inter";
+  font-weight: 400;
+  font-display: swap;
+  src: url("./fonts/inter-400.woff2") format("woff2");
+}
+@font-face {
+  font-family: "Inter";
+  font-weight: 600;
+  font-display: swap;
+  src: url("./fonts/inter-600.woff2") format("woff2");
+}
+@font-face {
+  font-family: "Space Grotesk";
+  font-weight: 300;
+  font-display: swap;
+  src: url("./fonts/space-grotesk-300.woff2") format("woff2");
+}
+@font-face {
+  font-family: "Space Grotesk";
+  font-weight: 400;
+  font-display: swap;
+  src: url("./fonts/space-grotesk-400.woff2") format("woff2");
+}
+@font-face {
+  font-family: "Space Grotesk";
+  font-weight: 500;
+  font-display: swap;
+  src: url("./fonts/space-grotesk-500.woff2") format("woff2");
+}
+
+:root,
+[data-theme="light"] {
+  --ground: #ffffff;
+  --ink: #000000;
+  --ink-muted: #6b7280;
+  --ink-soft: #374151;
+  --rule: var(--ink);
+  --rule-subtle: #e5e7eb;
+  --rule-quiet: #6b7280;
+  --solid-hover: #1f2937;
+  --pre-surface: #f7f7f7;
+  --pre-ink: #262626;
+  --prose-hairline: #e0e0e0;
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --ground: #000000;
+    --ink: #ffffff;
+    --ink-muted: #9ca3af;
+    --ink-soft: #d1d5db;
+    --rule-subtle: #1f2937;
+    --rule-quiet: #4b5563;
+    --solid-hover: #e5e7eb;
+    --pre-surface: #0c0c0c;
+    --pre-ink: #d6d6d6;
+    --prose-hairline: #262626;
+    color-scheme: dark;
+  }
+}
+[data-theme="dark"] {
+  --ground: #000000;
+  --ink: #ffffff;
+  --ink-muted: #9ca3af;
+  --ink-soft: #d1d5db;
+  --rule-subtle: #1f2937;
+  --rule-quiet: #4b5563;
+  --solid-hover: #e5e7eb;
+  --pre-surface: #0c0c0c;
+  --pre-ink: #d6d6d6;
+  --prose-hairline: #262626;
+  color-scheme: dark;
+}
+:root {
+  --display: "Space Grotesk", Arial, Helvetica, sans-serif;
+  --body: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, Helvetica, sans-serif;
+  --mono: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
+  --space-1: 4px;
+  --space-1-5: 6px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-6: 24px;
+  --space-8: 32px;
+  --hairline: 1px solid var(--rule);
+  /* Status fills, the same in both schemes; text on them is always --on-status (at least 5.9:1). */
+  --ok: #b2d9c0;
+  --alarm: #e8afaf;
+  --handoff: #fdf1c1;
+  --on-status: #000000;
+}
+/* A status box: a hue inside an ink border. As a tag it holds a word; empty, it is a 10px square marker. */
+.status {
+  display: inline-block;
+  border: var(--hairline);
+  background: var(--status, transparent);
+  color: var(--on-status);
+  font: 400 13px / 20px var(--display);
+  letter-spacing: 0.05em;
+  padding: 0 var(--space-2);
+}
+[data-status="ok"] {
+  --status: var(--ok);
+}
+[data-status="alarm"] {
+  --status: var(--alarm);
+}
+[data-status="handoff"] {
+  --status: var(--handoff);
+}
+.model[data-status]::before,
+.note[data-status]::before {
+  content: "";
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  margin-right: var(--space-2);
+  border: var(--hairline);
+  background: var(--status);
+  vertical-align: -0.05em;
+}
+
+* {
+  box-sizing: border-box;
+}
+html,
+body {
+  margin: 0;
+  background: var(--ground);
+  color: var(--ink);
+  font: 300 16px / 24px var(--body);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+button,
+textarea {
+  font: inherit;
+  color: inherit;
+}
+:focus-visible {
+  outline: 2px solid var(--ink);
+  outline-offset: 2px;
+}
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+}
+h1,
+h2,
+h3,
+p {
+  margin: 0;
+}
+h1,
+h2,
+h3 {
+  font-family: var(--display);
+}
+/* The label style: chip buttons, meta lines, small status words. */
+.label {
+  font: 300 14px / 20px var(--display);
+  letter-spacing: 0.05em;
+}
+

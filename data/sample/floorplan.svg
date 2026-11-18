@@ -1,0 +1,38 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1000" height="760" viewBox="0 0 1000 760" font-family="Arial, Helvetica, sans-serif">
+  <rect width="1000" height="760" fill="#ffffff"/>
+  <text x="40" y="44" font-size="26" font-weight="bold">Grundriss 2. OG — Musterstraße 12</text>
+  <text x="40" y="72" font-size="16" fill="#444">Wohnfläche gesamt: 82,5 m² (Balkon zu 50 % angerechnet)</text>
+
+  <!-- north arrow -->
+  <g transform="translate(920,60)">
+    <polygon points="0,-30 12,10 0,2 -12,10" fill="#000"/>
+    <text x="-6" y="34" font-size="18" font-weight="bold">N</text>
+  </g>
+
+  <g stroke="#000" stroke-width="6" fill="none">
+    <!-- outer walls -->
+    <rect x="40" y="100" width="900" height="520"/>
+    <!-- north row: Schlafzimmer | Kinderzimmer | Arbeitszimmer | Bad -->
+    <line x1="300" y1="100" x2="300" y2="300"/>
+    <line x1="520" y1="100" x2="520" y2="300"/>
+    <line x1="700" y1="100" x2="700" y2="300"/>
+    <!-- hallway band -->
+    <line x1="40" y1="300" x2="940" y2="300"/>
+    <line x1="40" y1="380" x2="940" y2="380"/>
+    <!-- south row: Wohnzimmer | Küche -->
+    <line x1="620" y1="380" x2="620" y2="620"/>
+  </g>
+  <!-- balcony, south side -->
+  <rect x="140" y="620" width="380" height="100" fill="none" stroke="#000" stroke-width="3" stroke-dasharray="10,6"/>
+
+  <g font-size="20" text-anchor="middle">
+    <text x="170" y="190" font-weight="bold">Schlafzimmer</text><text x="170" y="218">16,0 m²</text>
+    <text x="410" y="190" font-weight="bold">Kinderzimmer</text><text x="410" y="218">12,5 m²</text>
+    <text x="610" y="190" font-weight="bold">Arbeitszimmer</text><text x="610" y="218">9,0 m²</text>
+    <text x="820" y="190" font-weight="bold">Bad</text><text x="820" y="218">5,0 m²</text>
+    <text x="490" y="336" font-weight="bold">Flur</text><text x="490" y="362">4,5 m²</text>
+    <text x="330" y="490" font-weight="bold">Wohnzimmer</text><text x="330" y="518">24,5 m²</text>
+    <text x="780" y="490" font-weight="bold">Küche</text><text x="780" y="518">8,5 m²</text>
+    <text x="330" y="668" font-weight="bold">Balkon</text><text x="330" y="694">5,0 m² (Süd)</text>
+  </g>
+</svg>
