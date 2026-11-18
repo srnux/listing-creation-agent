@@ -13,8 +13,8 @@ const jobs: [string, () => Promise<unknown>][] = [
     "photos/16-duplicate.jpg",
     async () => {
       const { width = 0, height = 0 } = await sharp(photo("01-living")).metadata();
-      const dx = Math.round(width * 0.05);
-      const dy = Math.round(height * 0.05);
+      const dx = Math.round(width * 0.02);
+      const dy = Math.round(height * 0.02);
       return sharp(photo("01-living"))
         .extract({ left: dx, top: dy, width: width - 2 * dx, height: height - 2 * dy })
         .jpeg({ quality: 80 })
