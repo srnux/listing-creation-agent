@@ -5,7 +5,9 @@
   "description": "An agent on Amazon Bedrock that turns photos, a floor plan and broker notes into a bilingual exposé and OpenImmo XML.",
   "license": "MIT",
   "type": "module",
-  "engines": { "node": ">=20" },
+  "engines": {
+    "node": ">=20"
+  },
   "scripts": {
     "dev": "pnpm --parallel --stream --filter @listing/server --filter @listing/web dev",
     "typecheck": "tsc -p packages/core/tsconfig.json && tsc -p packages/server/tsconfig.json",
@@ -17,6 +19,7 @@
   },
   "devDependencies": {
     "@types/node": "^26.6.3",
+    "sharp": "^0.35.5",
     "tsx": "^4.23.15",
     "typescript": "^7.0.2",
     "vitest": "^5.0.2"

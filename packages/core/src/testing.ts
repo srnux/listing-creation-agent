@@ -1,7 +1,11 @@
+import { fileURLToPath } from "node:url";
 import { ListingDraft, type FloorPlan } from "./domain/draft.js";
 import type { ModelClient, ModelRequest, ModelResponse, ScriptStep, Usage } from "./model.js";
 
 export { call, say } from "./model.js";
+
+/** Absolute path to data/sample (photos/, floorplan.png, notes.txt, agency-tone.md). */
+export const SAMPLE_DIR = fileURLToPath(new URL("../../../data/sample/", import.meta.url));
 
 export const SAMPLE_NOTES =
   "3 Zimmer, 2. OG, Küche neu 2023, Balkon Süd, 1.450 € kalt, NK 220 €.\n" +
