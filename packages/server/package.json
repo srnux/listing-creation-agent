@@ -1,0 +1,17 @@
+{
+  "name": "@listing/server",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Bedrock adapter, HTTP API with live run events, replay and CLI.",
+  "license": "MIT",
+  "type": "module",
+  "scripts": {
+    "dev": "tsx watch src/main.ts"
+  },
+  "dependencies": {
+    "@anthropic-ai/bedrock-sdk": "^0.34.0",
+    "@anthropic-ai/sdk": "^0.129.0",
+    "@listing/core": "workspace:*",
+    "zod": "^4.6.5"
+  }
+}

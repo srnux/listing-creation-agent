@@ -1,0 +1,25 @@
+{
+  "name": "listing-creation-agent",
+  "version": "0.1.0",
+  "private": true,
+  "description": "An agent on Amazon Bedrock that turns photos, a floor plan and broker notes into a bilingual exposé and OpenImmo XML.",
+  "license": "MIT",
+  "type": "module",
+  "engines": { "node": ">=20" },
+  "scripts": {
+    "dev": "pnpm --parallel --stream --filter @listing/server --filter @listing/web dev",
+    "typecheck": "tsc -p packages/core/tsconfig.json && tsc -p packages/server/tsconfig.json",
+    "test": "vitest run",
+    "sample": "tsx packages/server/src/cli.ts",
+    "check-models": "tsx packages/server/src/check-models.ts",
+    "make-sample": "tsx scripts/make-sample.ts",
+    "fetch-xsd": "tsx scripts/fetch-xsd.ts"
+  },
+  "devDependencies": {
+    "@types/node": "^26.6.3",
+    "tsx": "^4.23.15",
+    "typescript": "^7.0.2",
+    "vitest": "^5.0.2"
+  },
+  "packageManager": "pnpm@11.24.0"
+}

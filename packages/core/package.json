@@ -1,0 +1,16 @@
+{
+  "name": "@listing/core",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Domain, photo checks, vision calls, guards, tools and agent loop. No HTTP or model provider.",
+  "license": "MIT",
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts",
+    "./fields": "./src/domain/fields.ts",
+    "./testing": "./src/testing.ts"
+  },
+  "dependencies": {
+    "zod": "^4.6.5"
+  }
+}
