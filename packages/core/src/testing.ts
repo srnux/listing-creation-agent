@@ -4,6 +4,24 @@ import type { ModelClient, ModelRequest, ModelResponse, ScriptStep, Usage } from
 
 export { call, say } from "./model.js";
 
+/** A sharp 600×400 checker JPEG; the seed changes the cell size so hashes differ between photos. */
+export async function checkerJpeg(r: number, g: number, b: number, seed = 1): Promise<Buffer> {
+  const sharp = (await import("sharp")).default;
+  const w = 600;
+  const h = 400;
+  const cell = 7 + seed * 5;
+  const raw = Buffer.alloc(w * h * 3);
+  for (let y = 0; y < h; y++)
+    for (let x = 0; x < w; x++) {
+      const i = (y * w + x) * 3;
+      const k = (Math.floor(x / cell) + Math.floor(y / (cell * 2))) % 2 ? 1 : 0.6;
+      raw[i] = r * k;
+      raw[i + 1] = g * k;
+      raw[i + 2] = b * k;
+    }
+  return sharp(raw, { raw: { width: w, height: h, channels: 3 } }).jpeg().toBuffer();
+}
+
 /** Absolute path to data/sample (photos/, floorplan.png, notes.txt, agency-tone.md). */
 export const SAMPLE_DIR = fileURLToPath(new URL("../../../data/sample/", import.meta.url));
 
@@ -105,7 +123,8 @@ export class ScriptedModel implements ModelClient {
   ) {}
 
   async complete(request: ModelRequest): Promise<ModelResponse> {
-    this.requests.push({ ...request, signal: undefined });
+    // Copy the messages: the loop keeps appending to the same array after this call.
+    this.requests.push({ ...request, messages: [...request.messages], signal: undefined });
     const step = this.steps[this.next++];
     if (!step) throw new Error(`ScriptedModel: no step ${this.next} scripted`);
     const content = typeof step === "function" ? step(request) : step;
