@@ -21,6 +21,7 @@ export type RunEvent =
   | { type: "model"; turn: number; text: string }
   | { type: "tool_start"; callId: string; tool: string; input: unknown }
   | { type: "tool_end"; callId: string; tool: string; summary: string; result: unknown; isError: boolean; durationMs: number }
-  | { type: "question"; question: BrokerQuestion }
+  /** prefill: the recorded answer, when a replay asks the question again. */
+  | { type: "question"; question: BrokerQuestion; prefill?: BrokerAnswer }
   | { type: "answer"; questionId: string; answer: BrokerAnswer }
   | { type: "done"; outcome: Outcome; draft: DraftSnapshot; usage: Usage };
