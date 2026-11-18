@@ -1,5 +1,7 @@
 import "./env.js";
+import { structuredCall } from "@listing/core";
 import { checkerJpeg } from "@listing/core/testing";
+import { z } from "zod";
 import { BedrockModel, DEFAULT_VISION, missingCredentials } from "./bedrock.js";
 
 // One-shot check that both models are invocable in this account and region, and that vision works.
@@ -35,6 +37,25 @@ for (const [name, model, messages] of checks) {
   } catch (e) {
     failed = true;
     console.log(`FAIL ${name.padEnd(18)} ${model.id}  ${e instanceof Error ? e.message : String(e)}`);
+  }
+}
+
+// The path the photo and floor-plan steps use: an image plus a forced tool call (tool_choice, no effort).
+{
+  const started = performance.now();
+  try {
+    const r = await structuredCall(vision, {
+      system: "Describe images.",
+      content: [{ type: "image", mediaType: "image/jpeg", data: PIXEL }, { type: "text", text: "Report what this image shows." }],
+      toolName: "report_image",
+      description: "Report a short description of the image.",
+      schema: z.object({ description: z.string() }),
+      maxTokens: 1000,
+    });
+    console.log(`OK   ${"vision forced tool".padEnd(18)} ${vision.id}  ${Math.round(performance.now() - started)} ms  ${JSON.stringify(r)}`);
+  } catch (e) {
+    failed = true;
+    console.log(`FAIL ${"vision forced tool".padEnd(18)} ${vision.id}  ${e instanceof Error ? e.message : String(e)}`);
   }
 }
 process.exitCode = failed ? 1 : 0;

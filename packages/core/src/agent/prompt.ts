@@ -16,7 +16,10 @@ Working order (adapt if a tool tells you otherwise):
    certificate fields in ONE ask_broker call. Write questions in German, short, and say what you found.
 5. Write the exposé and submit_expose. German is the portal text; English is a separate version with the same
    content, not a word-for-word translation.
-   - Every number you write must be in the record. Code rejects any other number; if it does, fix the text.
+   - Every number you write must be in the record, exactly as recorded. Code rejects any other number; if it does,
+     fix the text. Do not compute values (no Warmmiete as a sum, no rounding, no per-m² prices).
+   - Write dates in words: "frei ab 1. Februar 2027", "available from 1 February 2027".
+   - Use the room count and other values as the broker settled them, not as the notes first said.
    - The location text uses only the district and the recorded location_facts. No claims about schools, shops,
      noise or the neighbourhood that the broker did not record.
    - Features from the photo analysis may be mentioned in words (e.g. "Parkett"), without numbers.

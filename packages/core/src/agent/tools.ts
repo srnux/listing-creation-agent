@@ -47,7 +47,7 @@ export class RunAbort extends Error {
   override name = "RunAbort";
 }
 
-const EXPOSE_REPAIRS = 1;
+const EXPOSE_REPAIRS = 2;
 const ASK_ATTEMPTS = 3;
 
 const ok = (data: unknown, summary: string): ToolResult => ({ content: JSON.stringify(data), data, summary });
@@ -227,9 +227,14 @@ export function createTools(ctx: RunContext): Tool[] {
         if (invented.length) {
           exposeFailures++;
           const list = invented.map((n) => `"${n.raw}" in "…${n.context}…"`).join("\n");
-          if (exposeFailures > EXPOSE_REPAIRS) throw new RunAbort(`Number guard failed twice: ${invented.map((n) => n.raw).join(", ")}`);
+          if (exposeFailures > EXPOSE_REPAIRS) throw new RunAbort(`Number guard failed ${exposeFailures} times: ${invented.map((n) => n.raw).join(", ")}`);
           return {
-            ...fail(`Rejected: these numbers are not in the record:\n${list}\nUse only values from the draft, or rephrase without the number. Submit again.`, { invented }),
+            ...fail(
+              `Rejected: these numbers are not in the record:\n${list}\nUse only values exactly as the draft holds them, or rephrase without the number. ` +
+                `Do not add up or convert values (no sum of rent and service charges, no rounding). ` +
+                `Write dates in words, e.g. "1. Februar 2027". Submit again.`,
+              { invented },
+            ),
             summary: `rejected, not in the record: ${invented.map((n) => `"${n.context}"`).join(", ")}`,
           };
         }

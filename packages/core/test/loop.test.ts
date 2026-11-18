@@ -156,11 +156,15 @@ test("an aborted run ends as failed with the reason", async () => {
   expect((outcome as { reason: string }).reason).toContain("superseded");
 });
 
-test("two number-guard failures end the run as failed", async () => {
+test("three number-guard failures end the run as failed", async () => {
   const bad = structuredClone(completeDraft().expose!);
   bad.de.description = "Ca. 95 m² Wohnfläche, ruhig gelegen.";
-  const model = new ScriptedModel([[call("submit_expose", bad)], [call("submit_expose", bad)], [say("never")]]);
-  const { outcome } = await runListing({ model, ctx: await context(), tone: "" });
+  const model = new ScriptedModel([[call("submit_expose", bad)], [call("submit_expose", bad)], [call("submit_expose", bad)], [say("never")]]);
+  const events: RunEvent[] = [];
+  const { outcome } = await runListing({ model, ctx: await context(), tone: "", onEvent: (e) => events.push(e) });
   expect(outcome).toMatchObject({ status: "failed" });
   expect((outcome as { reason: string }).reason).toContain("95");
+  // No step stays "running" on the page: every tool_start gets its tool_end, the aborting one as an error.
+  expect(events.filter((e) => e.type === "tool_end")).toHaveLength(events.filter((e) => e.type === "tool_start").length);
+  expect(events.filter((e) => e.type === "tool_end").at(-1)).toMatchObject({ isError: true });
 });

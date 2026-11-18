@@ -98,7 +98,7 @@ test("record_facts keeps valid facts and reports invalid ones", async () => {
   expect(res.content).toContain("pool");
 });
 
-test("submit_expose rejects an invented number, second failure aborts", async () => {
+test("submit_expose rejects an invented number, third failure aborts", async () => {
   const d = completeDraft();
   const expose = structuredClone(d.expose!);
   d.expose = undefined;
@@ -108,7 +108,10 @@ test("submit_expose rejects an invented number, second failure aborts", async ()
   expect(first.isError).toBe(true);
   expect(first.content).toContain("95");
   expect(first.summary).toContain("95");
+  expect(first.content).toMatch(/Februar 2027/);
+  expect(first.content).toMatch(/sum|Summe|add/i);
   expect(d.expose).toBeUndefined();
+  expect((await run("submit_expose", expose)).isError).toBe(true);
   await expect(run("submit_expose", expose)).rejects.toThrow(RunAbort);
 });
 

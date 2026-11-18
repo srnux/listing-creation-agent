@@ -93,13 +93,24 @@ export class ListingDraft {
     return REQUIRED_FIELDS.filter((f) => !this.current.has(f));
   }
 
-  /** Every number the exposé may state: fact values, numbers inside text facts, plan areas, and the notes. */
+  /**
+   * Every number the exposé may state: current fact values, numbers inside text facts, and plan areas. Not the raw
+   * notes: a value the broker corrected ("3 Zimmer" → 4) must not stay usable. ISO dates are known in their German
+   * forms too ("01.02.2027", "1.2.2027", "1. Februar 2027").
+   */
   knownNumbers(): Set<number> {
     const out = new Set<number>();
     const add = (v: unknown) => {
       if (typeof v === "number") out.add(v);
-      else if (typeof v === "string") numbersIn(v).forEach((n) => out.add(n));
-      else if (Array.isArray(v)) v.forEach(add);
+      else if (typeof v === "string") {
+        numbersIn(v).forEach((n) => out.add(n));
+        const iso = /^(\d{4})-(\d{2})-(\d{2})$/.exec(v);
+        if (iso) {
+          const [, y, m, d] = iso as unknown as [string, string, string, string];
+          for (const form of [`${d}.${m}.${y}`, `${Number(d)}.${Number(m)}.${y}`]) numbersIn(form).forEach((n) => out.add(n));
+          [y, m, d].forEach((n) => out.add(Number(n)));
+        }
+      } else if (Array.isArray(v)) v.forEach(add);
     };
     for (const f of this.current.values()) add(f.value);
     if (this.plan) {
@@ -107,7 +118,6 @@ export class ListingDraft {
       out.add(this.plan.totalLivingArea_m2);
       out.add(this.plan.roomCount);
     }
-    numbersIn(this.notes).forEach((n) => out.add(n));
     return out;
   }
 

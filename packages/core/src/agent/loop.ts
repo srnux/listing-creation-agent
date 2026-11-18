@@ -142,7 +142,14 @@ export async function runListing(deps: RunDeps): Promise<{ outcome: Outcome; usa
       for (const use of uses) {
         onEvent?.({ type: "tool_start", callId: use.id, tool: use.name, input: use.input });
         const started = performance.now();
-        const res = await runTool(use);
+        let res: ToolResult;
+        try {
+          res = await runTool(use);
+        } catch (e) {
+          // The run ends here; close the step so the page does not show it as still running.
+          onEvent?.({ type: "tool_end", callId: use.id, tool: use.name, summary: message(e).slice(0, 160), result: message(e), isError: true, durationMs: Math.round(performance.now() - started) });
+          throw e;
+        }
         const isError = res.isError === true;
         onEvent?.({
           type: "tool_end",

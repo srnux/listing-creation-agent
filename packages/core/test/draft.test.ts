@@ -1,6 +1,7 @@
 import { expect, test } from "vitest";
 import { compareSources } from "../src/domain/compare.js";
 import { FieldError, ListingDraft } from "../src/domain/draft.js";
+import { checkNumbers } from "../src/guards/numbers.js";
 import { planWith4Rooms, sampleDraftFromNotes } from "../src/testing.js";
 
 test("set rejects wrong types and unknown enum values", () => {
@@ -46,6 +47,21 @@ test("living area differing by more than 3 % from the plan is a conflict", () =>
   expect(compareSources(d).map((c) => c.field)).toEqual(["living_area_m2"]);
   d.set("living_area_m2", 82, "notes");
   expect(compareSources(d)).toEqual([]);
+});
+
+test("a value the broker corrected is no longer known", () => {
+  const d = sampleDraftFromNotes(); // notes say "3 Zimmer"
+  d.set("rooms", 4, "broker");
+  expect(d.knownNumbers().has(4)).toBe(true);
+  expect(d.knownNumbers().has(3)).toBe(false);
+});
+
+test("ISO date facts are known in German date forms", () => {
+  const d = sampleDraftFromNotes(); // available_from 2027-02-01
+  d.set("energy_valid_until", "2032-05-14", "broker");
+  const known = d.knownNumbers();
+  expect(checkNumbers(["Frei ab 01.02.2027", "frei ab 1.2.2027", "ab 1. Februar 2027", "gültig bis 14.05.2032"], known)).toEqual([]);
+  expect(checkNumbers(["Frei ab 01.03.2027"], known).map((f) => f.raw)).toEqual(["01.03.2027"]);
 });
 
 test("knownNumbers includes notes numbers, location fact numbers and plan areas", () => {
