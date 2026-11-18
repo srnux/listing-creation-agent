@@ -20,6 +20,30 @@ export function values(token: string): number[] {
   return [decimal, ...thousands];
 }
 
+export interface InventedNumber {
+  /** The number as written, e.g. "65". */
+  raw: string;
+  /** About 20 characters either side, to show where it is. */
+  context: string;
+}
+
+/** Numbers that never need a source: "1 Balkon", "0 Stufen". */
+const ALWAYS_OK = new Set([0, 1]);
+
+/** Every number in the texts whose possible values are all unknown. */
+export function checkNumbers(texts: string[], known: Set<number>): InventedNumber[] {
+  const out: InventedNumber[] = [];
+  for (const text of texts) {
+    for (const m of text.matchAll(new RegExp(NUM, "g"))) {
+      const vals = values(m[0]);
+      if (vals.some((v) => ALWAYS_OK.has(v) || known.has(v))) continue;
+      const i = m.index ?? 0;
+      out.push({ raw: m[0], context: text.slice(Math.max(0, i - 20), i + m[0].length + 20).replace(/\s+/g, " ").trim() });
+    }
+  }
+  return out;
+}
+
 /** Every value of every number in a text. */
 export function numbersIn(text: string): number[] {
   return [...text.matchAll(new RegExp(NUM, "g"))].flatMap((m) => values(m[0]));
