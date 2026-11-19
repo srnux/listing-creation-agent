@@ -58,7 +58,7 @@ const stops: Record<string, ModelResponse["stop"]> = {
   refusal: "refusal",
 };
 
-/** The Messages API on Amazon Bedrock behind ModelClient. Forced tool calls run without effort/thinking. */
+/** The Messages API on Amazon Bedrock behind ModelClient. A toolChoice is requested through the prompt (auto tool choice). */
 export class BedrockModel implements ModelClient {
   readonly id: string;
   private readonly client: MessagesClient;
@@ -75,11 +75,16 @@ export class BedrockModel implements ModelClient {
       {
         model: this.id,
         max_tokens: req.maxTokens,
-        system: [{ type: "text", text: req.system, cache_control: { type: "ephemeral" } }],
+        system: [
+          { type: "text", text: req.system, cache_control: { type: "ephemeral" } },
+          ...(req.toolChoice ? [{ type: "text" as const, text: `Answer only by calling the ${req.toolChoice.name} tool, exactly once.` }] : []),
+        ],
         ...(req.tools.length && {
           tools: req.tools.map((t) => ({ name: t.name, description: t.description, input_schema: t.inputSchema as Anthropic.Tool.InputSchema })),
         }),
-        ...(req.toolChoice ? { tool_choice: { type: "tool" as const, name: req.toolChoice.name } } : { output_config: { effort: this.effort } }),
+        // Opus/Sonnet 5.5 reject forced tool_choice ("tool"/"any"), so the tool is requested in the system prompt instead.
+        ...(req.toolChoice && { tool_choice: { type: "auto" as const, disable_parallel_tool_use: true } }),
+        output_config: { effort: this.effort },
         messages: req.messages.map((m: Message) => ({
           role: m.role,
           content: typeof m.content === "string" ? m.content : m.content.map(toParam),
