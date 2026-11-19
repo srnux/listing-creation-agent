@@ -48,7 +48,7 @@ test("image and document blocks map to Messages API params", async () => {
   ]);
 });
 
-test("toolChoice sets tool_choice and omits output_config effort", async () => {
+test("toolChoice asks for the tool with auto choice (5.5 models reject forced tool_choice)", async () => {
   const { client, requests } = fakeClient();
   await new BedrockModel({ client }).complete({
     system: "s",
@@ -57,8 +57,9 @@ test("toolChoice sets tool_choice and omits output_config effort", async () => {
     maxTokens: 10,
     messages: [{ role: "user", content: "x" }],
   });
-  expect(requests[0].tool_choice).toEqual({ type: "tool", name: "report" });
-  expect(requests[0].output_config).toBeUndefined();
+  expect(requests[0].tool_choice).toEqual({ type: "auto", disable_parallel_tool_use: true });
+  expect(requests[0].system.at(-1).text).toContain("report");
+  expect(requests[0].output_config).toEqual({ effort: "medium" });
 });
 
 test("defaults to eu.anthropic.claude-opus-5-5 when ORCHESTRATOR_MODEL is unset", () => {

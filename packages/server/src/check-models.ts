@@ -40,7 +40,7 @@ for (const [name, model, messages] of checks) {
   }
 }
 
-// The path the photo and floor-plan steps use: an image plus a forced tool call (tool_choice, no effort).
+// The path the photo and floor-plan steps use: an image plus one required tool call (auto tool_choice, requested in the prompt).
 {
   const started = performance.now();
   try {

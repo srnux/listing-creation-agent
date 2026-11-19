@@ -41,7 +41,7 @@ export interface ModelRequest {
   tools: ToolDef[];
   messages: Message[];
   maxTokens: number;
-  /** Forces the model to call this tool. */
+  /** The model must answer by calling this tool (adapters request it; structuredCall checks it happened). */
   toolChoice?: { name: string };
   signal?: AbortSignal;
 }
