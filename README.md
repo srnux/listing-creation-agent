@@ -21,7 +21,7 @@ All data is synthetic or stock (see [data/sample/CREDITS.md](data/sample/CREDITS
 pnpm install
 cp .env.example .env      # set AWS_REGION and AWS_BEARER_TOKEN_BEDROCK (or use your AWS profile)
 pnpm check-models         # Opus 5.5 and Sonnet 5.5 reachable in the EU profile?
-pnpm dev                  # page on http://localhost:5173, API on 127.0.0.1:3000
+pnpm dev                  # page on http://localhost:6003, API on 127.0.0.1:3000
 ```
 
 From the terminal instead: `pnpm sample` (you answer the questions) or `pnpm sample --auto` (sample answers).
