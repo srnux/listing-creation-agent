@@ -8,7 +8,7 @@ const routes = ["/runs", "/sample", "/replays", "/health"];
 export default defineConfig({
   plugins: [react()],
   server: {
-    port: Number(process.env.WEB_PORT ?? 5173),
+    port: Number(process.env.WEB_PORT ?? 6014),
     strictPort: true,
     proxy: Object.fromEntries(routes.map((r) => [r, { target: api }])),
   },
